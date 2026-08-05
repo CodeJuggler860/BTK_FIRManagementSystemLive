@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/FIRManagementSystem2.slnx/config/applicationhost.config
+/.vs/FIRManagementSystem2.slnx/FileContentIndex/6c0fb008-9700-44f7-981b-0092ccafce9d.vsidx
+/.vs/FIRManagementSystem2.slnx/FileContentIndex/7dad0288-71a5-4829-b613-d443c3d99bd6.vsidx
+/.vs/FIRManagementSystem2.slnx/FileContentIndex/c3d8f496-7ecb-450b-a175-ce2369d9efcc.vsidx
+/.vs/FIRManagementSystem2.slnx/FileContentIndex/ee5fc764-25ed-455e-8370-3b4fb4c42719.vsidx
+/.vs/FIRManagementSystem2.slnx/v18/.suo
+/.vs/FIRManagementSystem2.slnx/v18/DocumentLayout.backup.json
+/.vs/FIRManagementSystem2.slnx/v18/DocumentLayout.json
