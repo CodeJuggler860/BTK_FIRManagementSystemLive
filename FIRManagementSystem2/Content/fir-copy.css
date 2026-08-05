@@ -1,0 +1,395 @@
+﻿/* ================================================================
+   fir-copy.css — FIR Copy & Remarks Page (stable)
+   ================================================================ */
+
+/* ── Page reset – allow natural scrolling ── */
+html, body {
+    height: auto;
+    overflow: visible; /* let the page scroll normally */
+}
+
+.main-wrap {
+    padding: 12px 28px 40px 28px; /* keep your reduced top padding */
+    /* no flex-column, no height restriction */
+}
+
+/* ── Topbar margin ── */
+.topbar {
+    margin-bottom: 4px !important;
+}
+
+/* ── Combined FIR Header Row ── */
+.fir-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+.fir-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+    .fir-header-left h3 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin: 0;
+    }
+
+.fir-header-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .85rem;
+    color: var(--ink-soft);
+    background: var(--cream-0);
+    border: 1px solid var(--cream-2);
+    padding: 6px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+
+    .fir-header-right i {
+        font-size: 1rem;
+        color: var(--teal-mid);
+    }
+
+.current-filename {
+    font-weight: 500;
+}
+
+.attachment-badge {
+    font-size: .75rem;
+    color: var(--ink-muted);
+    margin-left: 8px;
+    background: var(--cream-1);
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+/* ── Attachment Preview Panel ── */
+.attachment-preview-panel {
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--cream-2);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    margin-bottom: 20px;
+    background: #fff;
+}
+
+.preview-frame {
+    flex: 1;
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+    .preview-frame iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+    }
+
+.attachment-thumbs {
+    display: flex;
+    gap: 8px;
+    padding: 10px 15px;
+    border-top: 1px solid var(--cream-2);
+    background: var(--cream-1);
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.thumb-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .8rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    border: 1px solid var(--cream-3);
+    background: var(--cream-0);
+    white-space: nowrap;
+    transition: var(--t);
+}
+
+    .thumb-item:hover, .thumb-item.active {
+        background: var(--teal-ghost);
+        border-color: var(--teal-soft);
+        color: var(--teal-deep);
+    }
+
+    .thumb-item i {
+        font-size: 1.1rem;
+    }
+
+.no-attachment {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-faint);
+    gap: 8px;
+}
+
+    .no-attachment i {
+        font-size: 2rem;
+        opacity: .4;
+    }
+
+/* ── Remarks Panel – safe, scrollable internally ── */
+.remarks-panel-full {
+    margin-top: 0;
+    max-height: 60vh; /* never taller than 60% of viewport */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--cream-2);
+    border-radius: var(--r-lg);
+    overflow: hidden; /* keep so the border-radius clips content */
+    background: var(--cream-0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Header + Compose stay fixed at top */
+.remarks-header,
+.remarks-compose {
+    flex-shrink: 0; /* don't let them shrink */
+}
+
+.remarks-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--cream-2);
+    background: var(--cream-1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.remarks-title {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+    .remarks-title i {
+        color: var(--teal-mid);
+        font-size: 16px;
+    }
+
+.remarks-count {
+    background: var(--teal-ghost);
+    color: var(--teal-mid);
+    font-size: .67rem;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+}
+
+.remarks-compose {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--cream-2);
+    background: var(--cream-1);
+}
+
+    .remarks-compose textarea {
+        width: 100%;
+        min-height: 60px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--cream-3);
+        border-radius: var(--r);
+        font-size: .845rem;
+        font-family: 'Inter', sans-serif;
+        color: var(--ink);
+        background: var(--cream-0);
+        resize: vertical;
+        outline: none;
+        transition: border-color .2s, box-shadow .2s;
+    }
+
+        .remarks-compose textarea:focus {
+            border-color: var(--teal-soft);
+            box-shadow: 0 0 0 3px rgba(74,160,181,.1);
+            background: #fff;
+        }
+
+.compose-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.btn-add-remark {
+    background: var(--teal-deep);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 16px;
+    font-size: .8rem;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: var(--t);
+    box-shadow: 0 3px 10px rgba(30,95,107,.25);
+}
+
+    .btn-add-remark:hover {
+        background: var(--teal-mid);
+        box-shadow: 0 4px 14px rgba(30,95,107,.35);
+        transform: translateY(-1px);
+    }
+
+/* The scrollable list fills the remaining height */
+.remarks-list {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column; 
+    gap: 12px;
+}
+
+    .remarks-list::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .remarks-list::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .remarks-list::-webkit-scrollbar-thumb {
+        background: var(--cream-3);
+        border-radius: 999px;
+    }
+
+.remarks-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 10px;
+    color: var(--ink-faint);
+    text-align: center;
+}
+
+    .remarks-empty i {
+        font-size: 32px;
+        opacity: .4;
+    }
+
+/* ── Remark Card ── */
+.remark-card {
+    background: var(--cream-0);
+    border: 1px solid var(--cream-2);
+    border-radius: var(--r);
+    padding: 13px 15px;
+    transition: box-shadow var(--t);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+    .remark-card:hover {
+        box-shadow: var(--shadow-xs);
+    }
+
+    .remark-card.is-new {
+        animation: remarkIn .4s cubic-bezier(.34,1.56,.64,1);
+    }
+
+@keyframes remarkIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.remark-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.remark-author {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.remark-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .62rem;
+    font-weight: 800;
+    color: #fff;
+    flex-shrink: 0;
+    background: var(--teal-mid);
+}
+
+.remark-name {
+    font-size: .79rem;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.remark-role {
+    font-size: .68rem;
+    color: var(--ink-muted);
+}
+
+.remark-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.remark-time {
+    font-size: .68rem;
+    color: var(--ink-faint);
+    white-space: nowrap;
+}
+
+.remark-body {
+    font-size: .825rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+}

@@ -1,0 +1,1507 @@
+﻿<!--@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIR Management — Bahria Town Karachi Police</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --cream-0: #fdfbf8;
+            --cream-1: #f8f5f0;
+            --cream-2: #f0ebe2;
+            --cream-3: #e5ded3;
+            --ink: #1a1714;
+            --ink-soft: #3d3832;
+            --ink-muted: #7a7067;
+            --ink-faint: #b0a89e;
+            --teal-deep: #1e5f6b;
+            --teal-mid: #2d7d8e;
+            --teal-soft: #4aa0b5;
+            --teal-pale: #d4edf2;
+            --teal-ghost: #edf7fa;
+            --gold: #c09a2e;
+            --green-pale: #e8f5ed;
+            --green-mid: #2d7a4f;
+            --rose-pale: #fdeaea;
+            --rose-mid: #8b3a3a;
+            --amber-pale: #fef4e4;
+            --amber-mid: #8a5c15;
+            --violet-pale: #ede8f8;
+            --violet-mid: #5a3e8b;
+            --r: 10px;
+            --r-lg: 16px;
+            --shadow-xs: 0 1px 3px rgba(26,23,20,.05);
+            --shadow-sm: 0 2px 8px rgba(26,23,20,.07), 0 1px 3px rgba(26,23,20,.04);
+            --shadow-lg: 0 8px 40px rgba(26,23,20,.10), 0 2px 12px rgba(26,23,20,.06);
+            --t: .22s cubic-bezier(.4,0,.2,1);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--cream-1);
+            color: var(--ink);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 230px;
+            background: var(--teal-deep);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: 4px 0 24px rgba(0,0,0,.15);
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px 18px;
+            border-bottom: 1px solid rgba(255,255,255,.1);
+        }
+
+            .sidebar-brand .shield-wrap {
+                width: 38px;
+                height: 38px;
+                background: rgba(255,255,255,.12);
+                border-radius: 9px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+                .sidebar-brand .shield-wrap i {
+                    font-size: 19px;
+                    color: #fff;
+                }
+
+            .sidebar-brand h1 {
+                font-family: 'Playfair Display',serif;
+                font-size: .95rem;
+                font-weight: 700;
+                color: #fff;
+                line-height: 1.25;
+            }
+
+            .sidebar-brand p {
+                font-size: .65rem;
+                color: rgba(255,255,255,.45);
+                margin-top: 2px;
+                letter-spacing: .06em;
+                text-transform: uppercase;
+            }
+
+        .sidebar-nav {
+            padding: 12px 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-label {
+            font-size: .6rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: rgba(255,255,255,.3);
+            padding: 0 12px;
+            margin: 14px 0 5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 13px;
+            border-radius: 7px;
+            color: rgba(255,255,255,.6);
+            font-size: .8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--t);
+            margin-bottom: 1px;
+        }
+
+            .nav-item i {
+                font-size: 15px;
+                flex-shrink: 0;
+            }
+
+            .nav-item:hover {
+                background: rgba(255,255,255,.08);
+                color: #fff;
+            }
+
+            .nav-item.active {
+                background: rgba(255,255,255,.14);
+                color: #fff;
+            }
+
+            .nav-item .badge-nav {
+                margin-left: auto;
+                background: rgba(255,255,255,.18);
+                color: #fff;
+                font-size: .62rem;
+                padding: 2px 7px;
+                border-radius: 999px;
+                font-weight: 600;
+            }
+
+        .sidebar-footer {
+            padding: 14px 18px;
+            border-top: 1px solid rgba(255,255,255,.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .7rem;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+            .sidebar-footer .user-info .name {
+                font-size: .78rem;
+                font-weight: 600;
+                color: #fff;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .sidebar-footer .user-info .role {
+                font-size: .65rem;
+                color: rgba(255,255,255,.4);
+            }
+
+        /* ── Main ── */
+        .main-wrap {
+            margin-left: 230px;
+            padding: 28px 28px 48px;
+            min-height: 100vh;
+        }
+
+        /* ── Topbar ── */
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .topbar-left .eyebrow {
+            font-size: .7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--teal-mid);
+            margin-bottom: 3px;
+        }
+
+        .topbar-left h2 {
+            font-family: 'Playfair Display',serif;
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -.01em;
+            line-height: 1.2;
+        }
+
+        .topbar-left p {
+            font-size: .82rem;
+            color: var(--ink-muted);
+            margin-top: 3px;
+        }
+
+        .btn-primary-custom {
+            background: var(--teal-deep);
+            color: #fff;
+            border: none;
+            border-radius: var(--r);
+            padding: 10px 20px;
+            font-size: .845rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(30,95,107,.3);
+            transition: var(--t);
+            font-family: 'Inter',sans-serif;
+        }
+
+            .btn-primary-custom:hover {
+                background: var(--teal-mid);
+                box-shadow: 0 6px 20px rgba(30,95,107,.4);
+                transform: translateY(-1px);
+            }
+
+        .btn-outline-custom {
+            background: var(--cream-0);
+            color: var(--ink-soft);
+            border: 1.5px solid var(--cream-3);
+            border-radius: var(--r);
+            padding: 9px 16px;
+            font-size: .845rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: var(--t);
+            font-family: 'Inter',sans-serif;
+        }
+
+            .btn-outline-custom:hover {
+                border-color: var(--teal-soft);
+                color: var(--teal-deep);
+                background: var(--teal-ghost);
+            }
+
+        /* ── Stat cards ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        @@media (max-width:1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @@media (max-width:600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: var(--cream-0);
+            border-radius: var(--r-lg);
+            padding: 18px 20px;
+            border: 1px solid var(--cream-2);
+            box-shadow: var(--shadow-xs);
+            position: relative;
+            overflow: hidden;
+            transition: var(--t);
+        }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                border-radius: var(--r-lg) var(--r-lg) 0 0;
+            }
+
+            .stat-card.teal::before {
+                background: linear-gradient(90deg,var(--teal-deep),var(--teal-soft));
+            }
+
+            .stat-card.green::before {
+                background: var(--green-mid);
+            }
+
+            .stat-card.amber::before {
+                background: var(--gold);
+            }
+
+            .stat-card.rose::before {
+                background: #a84444;
+            }
+
+            .stat-card:hover {
+                box-shadow: var(--shadow-sm);
+                transform: translateY(-2px);
+            }
+
+        .stat-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 17px;
+        }
+
+            .stat-icon-wrap.teal {
+                background: var(--teal-ghost);
+                color: var(--teal-mid);
+            }
+
+            .stat-icon-wrap.green {
+                background: var(--green-pale);
+                color: var(--green-mid);
+            }
+
+            .stat-icon-wrap.amber {
+                background: var(--amber-pale);
+                color: var(--amber-mid);
+            }
+
+            .stat-icon-wrap.rose {
+                background: var(--rose-pale);
+                color: var(--rose-mid);
+            }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--ink);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-label {
+            font-size: .74rem;
+            color: var(--ink-muted);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        .stat-delta {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: .7rem;
+            font-weight: 600;
+            margin-top: 7px;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+
+            .stat-delta.up {
+                background: var(--green-pale);
+                color: var(--green-mid);
+            }
+
+            .stat-delta.neutral {
+                background: var(--cream-2);
+                color: var(--ink-muted);
+            }
+
+        /* ── Panel ── */
+        .panel {
+            background: var(--cream-0);
+            border-radius: var(--r-lg);
+            border: 1px solid var(--cream-2);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 18px 22px;
+            border-bottom: 1px solid var(--cream-2);
+        }
+
+        .panel-title {
+            font-size: .95rem;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+            .panel-title i {
+                color: var(--teal-mid);
+                font-size: 17px;
+            }
+
+        /* ── Filter row ── */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 14px 22px;
+            border-bottom: 1px solid var(--cream-2);
+            background: var(--cream-1);
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+            .search-wrap input {
+                width: 100%;
+                padding: 9px 14px 9px 36px;
+                border: 1.5px solid var(--cream-3);
+                border-radius: var(--r);
+                font-size: .84rem;
+                background: var(--cream-0);
+                color: var(--ink);
+                font-family: 'Inter',sans-serif;
+                transition: var(--t);
+            }
+
+                .search-wrap input::placeholder {
+                    color: var(--ink-faint);
+                }
+
+                .search-wrap input:focus {
+                    outline: none;
+                    border-color: var(--teal-soft);
+                    box-shadow: 0 0 0 3px rgba(74,160,181,.12);
+                }
+
+            .search-wrap i {
+                position: absolute;
+                left: 11px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--ink-faint);
+                pointer-events: none;
+                font-size: 14px;
+            }
+
+        .filter-select {
+            padding: 9px 30px 9px 11px;
+            border: 1.5px solid var(--cream-3);
+            border-radius: var(--r);
+            font-size: .81rem;
+            background-color: var(--cream-0);
+            color: var(--ink-soft);
+            font-family: 'Inter',sans-serif;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%237a7067' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 9px center;
+            min-width: 140px;
+            transition: var(--t);
+        }
+
+            .filter-select:focus {
+                outline: none;
+                border-color: var(--teal-soft);
+            }
+
+        /* ══════════════════════════════════════════
+           DATATABLE — clean, theme-matched styling
+           ══════════════════════════════════════════ */
+        .tbl-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        div.dataTables_wrapper {
+            padding: 0 !important;
+            overflow: visible !important;
+        }
+
+            div.dataTables_wrapper div.dataTables_filter,
+            div.dataTables_wrapper div.dataTables_length {
+                display: none !important;
+            }
+
+        table#firTable.dataTable {
+            width: 100% !important;
+            min-width: 1040px;
+            border-collapse: collapse !important;
+            table-layout: fixed;
+            font-family: 'Inter',sans-serif;
+        }
+
+        #firTable col:nth-child(1) {
+            width: 50px;
+        }
+
+        #firTable col:nth-child(2) {
+            width: 150px;
+        }
+
+        #firTable col:nth-child(3) {
+            width: 98px;
+        }
+
+        #firTable col:nth-child(4) {
+            width: 255px;
+        }
+
+        #firTable col:nth-child(5) {
+            width: 115px;
+        }
+
+        #firTable col:nth-child(6) {
+            width: 130px;
+        }
+
+        #firTable col:nth-child(7) {
+            width: 148px;
+        }
+
+        #firTable col:nth-child(8) {
+            width: 125px;
+        }
+
+        #firTable col:nth-child(9) {
+            width: 92px;
+        }
+
+        table#firTable.dataTable thead {
+            background: var(--cream-1);
+        }
+
+            table#firTable.dataTable thead th {
+                background: var(--cream-1) !important;
+                font-size: .67rem !important;
+                font-weight: 700 !important;
+                text-transform: uppercase !important;
+                letter-spacing: .075em !important;
+                color: var(--ink-faint) !important;
+                padding: 12px 12px 12px 14px !important;
+                border-bottom: 1.5px solid var(--cream-3) !important;
+                border-top: none !important;
+                white-space: nowrap !important;
+                overflow: hidden;
+            }
+
+                table#firTable.dataTable thead th:first-child {
+                    padding-left: 20px !important;
+                }
+
+                table#firTable.dataTable thead th.sorting,
+                table#firTable.dataTable thead th.sorting_asc,
+                table#firTable.dataTable thead th.sorting_desc {
+                    padding-right: 24px !important;
+                }
+
+                    table#firTable.dataTable thead th.sorting::after,
+                    table#firTable.dataTable thead th.sorting_asc::after,
+                    table#firTable.dataTable thead th.sorting_desc::after {
+                        right: 8px !important;
+                        font-size: 8px !important;
+                        opacity: .35;
+                    }
+
+                    table#firTable.dataTable thead th.sorting_asc::after {
+                        color: var(--teal-mid) !important;
+                        opacity: .7;
+                    }
+
+                    table#firTable.dataTable thead th.sorting_desc::after {
+                        color: var(--teal-mid) !important;
+                        opacity: .7;
+                    }
+
+        table#firTable.dataTable tbody td {
+            padding: 11px 12px 11px 14px !important;
+            font-size: .825rem !important;
+            border-bottom: 1px solid var(--cream-2) !important;
+            color: var(--ink-soft);
+            vertical-align: middle !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+            table#firTable.dataTable tbody td:first-child {
+                padding-left: 20px !important;
+            }
+
+        table#firTable.dataTable tbody tr:nth-child(even) td {
+            background: rgba(237,247,250,.5);
+        }
+
+        table#firTable.dataTable tbody tr:hover td {
+            background: var(--teal-ghost) !important;
+            cursor: default;
+        }
+
+        table#firTable.dataTable tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        table#firTable.dataTable tbody td.col-desc {
+            color: var(--ink-muted);
+            font-size: .79rem !important;
+        }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: .69rem;
+            font-weight: 600;
+            letter-spacing: .01em;
+            white-space: nowrap;
+        }
+
+            .badge-pill .dot {
+                width: 5px;
+                height: 5px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+        .badge-active {
+            background: var(--teal-ghost);
+            color: var(--teal-deep);
+        }
+
+            .badge-active .dot {
+                background: var(--teal-mid);
+            }
+
+        .badge-investigation {
+            background: var(--amber-pale);
+            color: var(--amber-mid);
+        }
+
+            .badge-investigation .dot {
+                background: var(--gold);
+            }
+
+        .badge-pending {
+            background: var(--violet-pale);
+            color: var(--violet-mid);
+        }
+
+            .badge-pending .dot {
+                background: var(--violet-mid);
+            }
+
+        .badge-closed {
+            background: var(--cream-2);
+            color: var(--ink-muted);
+        }
+
+            .badge-closed .dot {
+                background: var(--ink-faint);
+            }
+
+        .fir-no {
+            font-weight: 700;
+            color: var(--teal-mid);
+            font-size: .79rem;
+            letter-spacing: -.01em;
+            cursor: pointer;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+            .fir-no:hover {
+                color: var(--teal-deep);
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+
+        .row-sno {
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--ink-faint);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .act-btn {
+            width: 27px;
+            height: 27px;
+            border-radius: 6px;
+            border: 1.5px solid var(--cream-3);
+            background: var(--cream-0);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            cursor: pointer;
+            transition: var(--t);
+            flex-shrink: 0;
+        }
+
+            .act-btn.view {
+                color: var(--teal-mid);
+            }
+
+                .act-btn.view:hover {
+                    background: var(--teal-ghost);
+                    border-color: var(--teal-pale);
+                }
+
+            .act-btn.edit {
+                color: var(--amber-mid);
+            }
+
+                .act-btn.edit:hover {
+                    background: var(--amber-pale);
+                    border-color: #f5d99a;
+                }
+
+            .act-btn.del {
+                color: var(--rose-mid);
+            }
+
+                .act-btn.del:hover {
+                    background: var(--rose-pale);
+                    border-color: #f5c0c0;
+                }
+
+        .tbl-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 22px;
+            border-top: 1px solid var(--cream-2);
+            background: var(--cream-1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        div.dataTables_info {
+            font-size: .77rem !important;
+            color: var(--ink-faint) !important;
+            padding: 0 !important;
+            border: none !important;
+            background: transparent !important;
+        }
+
+        div.dataTables_paginate {
+            padding: 0 !important;
+            border: none !important;
+            background: transparent !important;
+        }
+
+            div.dataTables_paginate .paginate_button {
+                min-width: 30px !important;
+                height: 30px !important;
+                border-radius: 6px !important;
+                border: 1.5px solid var(--cream-3) !important;
+                background: var(--cream-0) !important;
+                font-size: .78rem !important;
+                font-weight: 600 !important;
+                color: var(--ink-soft) !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin: 0 2px !important;
+                cursor: pointer !important;
+                transition: var(--t) !important;
+                line-height: 1 !important;
+            }
+
+                div.dataTables_paginate .paginate_button:hover {
+                    background: var(--teal-ghost) !important;
+                    border-color: var(--teal-soft) !important;
+                    color: var(--teal-deep) !important;
+                    box-shadow: none !important;
+                }
+
+                div.dataTables_paginate .paginate_button.current,
+                div.dataTables_paginate .paginate_button.current:hover {
+                    background: var(--teal-deep) !important;
+                    border-color: var(--teal-deep) !important;
+                    color: #fff !important;
+                    box-shadow: 0 3px 10px rgba(30,95,107,.28) !important;
+                }
+
+                div.dataTables_paginate .paginate_button.disabled,
+                div.dataTables_paginate .paginate_button.disabled:hover {
+                    opacity: .3 !important;
+                    pointer-events: none !important;
+                    background: var(--cream-0) !important;
+                    color: var(--ink-faint) !important;
+                    border-color: var(--cream-3) !important;
+                    box-shadow: none !important;
+                }
+
+        #firTable tbody td.dataTables_empty {
+            text-align: center;
+            padding: 52px 20px !important;
+            color: var(--ink-faint);
+            font-size: .88rem;
+            white-space: normal !important;
+        }
+
+        .modal-content {
+            border-radius: var(--r-lg);
+            border: none;
+            box-shadow: var(--shadow-lg);
+            background: var(--cream-0);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--cream-2);
+            padding: 20px 24px;
+        }
+
+            .modal-header .modal-title {
+                font-family: 'Playfair Display',serif;
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: var(--ink);
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+                .modal-header .modal-title i {
+                    color: var(--teal-mid);
+                }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--cream-2);
+            padding: 16px 24px;
+            background: var(--cream-1);
+            border-radius: 0 0 var(--r-lg) var(--r-lg);
+        }
+
+        .form-label {
+            font-size: .79rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-field {
+            width: 100%;
+            padding: 9px 13px;
+            border: 1.5px solid var(--cream-3);
+            border-radius: var(--r);
+            font-size: .855rem;
+            font-family: 'Inter',sans-serif;
+            color: var(--ink);
+            background: #fff;
+            transition: var(--t);
+        }
+
+            .form-field:focus {
+                outline: none;
+                border-color: var(--teal-soft);
+                box-shadow: 0 0 0 3px rgba(74,160,181,.1);
+            }
+
+            .form-field::placeholder {
+                color: var(--ink-faint);
+            }
+
+            .form-field[readonly] {
+                background: var(--cream-1);
+                color: var(--ink-muted);
+                cursor: not-allowed;
+            }
+
+        .fir-auto-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: .68rem;
+            font-weight: 600;
+            color: var(--teal-mid);
+            background: var(--teal-ghost);
+            padding: 3px 8px;
+            border-radius: 999px;
+            margin-left: 6px;
+        }
+
+        .toast-custom {
+            position: fixed;
+            bottom: 26px;
+            right: 26px;
+            background: var(--ink);
+            color: #fff;
+            padding: 13px 18px;
+            border-radius: var(--r);
+            font-size: .83rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            transform: translateY(14px);
+            opacity: 0;
+            transition: .3s cubic-bezier(.34,1.56,.64,1);
+            pointer-events: none;
+        }
+
+            .toast-custom.show {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            .toast-custom i {
+                color: #5dca9a;
+                font-size: 16px;
+            }
+
+        .detail-row {
+            display: flex;
+            gap: 8px;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--cream-2);
+        }
+
+            .detail-row:last-child {
+                border-bottom: none;
+            }
+
+        .detail-label {
+            font-size: .76rem;
+            font-weight: 600;
+            color: var(--ink-muted);
+            min-width: 130px;
+        }
+
+        .detail-value {
+            font-size: .83rem;
+            color: var(--ink);
+            flex: 1;
+        }
+
+        @@media (max-width:768px) {
+            .sidebar {
+                width: 56px;
+            }
+
+            .sidebar-brand h1, .sidebar-brand p, .nav-item span, .nav-item .badge-nav, .sidebar-footer .user-info {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 11px;
+            }
+
+            .main-wrap {
+                margin-left: 56px;
+                padding: 18px 14px;
+            }
+        }
+    </style>
+</head>
+<body>-->
+
+    <!-- SIDEBAR -->
+    <!--<aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="shield-wrap"><i class="bi bi-shield-fill-check"></i></div>
+            <h1>Bahria Town Police</h1>
+            <p>Karachi Command</p>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Main</div>
+            <div class="nav-item active"><i class="bi bi-file-earmark-text"></i><span>FIR Management</span><span class="badge-nav" id="sidebarCount">8</span></div>
+            <div class="nav-item"><i class="bi bi-people"></i><span>Personnel</span></div>
+            <div class="nav-item"><i class="bi bi-geo-alt"></i><span>Jurisdiction Map</span></div>
+            <div class="nav-label">Reports</div>
+            <div class="nav-item"><i class="bi bi-bar-chart-line"></i><span>Analytics</span></div>
+            <div class="nav-item"><i class="bi bi-printer"></i><span>Print Reports</span></div>
+            <div class="nav-item"><i class="bi bi-archive"></i><span>Archived FIRs</span></div>
+            <div class="nav-label">System</div>
+            <div class="nav-item"><i class="bi bi-sliders"></i><span>Settings</span></div>
+            <div class="nav-item"><i class="bi bi-question-circle"></i><span>Help</span></div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="avatar-sm">SHO</div>
+            <div class="user-info">
+                <div class="name">SHO Abdul Rauf</div>
+                <div class="role">Station House Officer</div>
+            </div>
+        </div>
+    </aside>-->
+
+    <!-- MAIN -->
+    <!--<main class="main-wrap">-->
+        <!-- TOP BAR -->
+        <!--<div class="topbar">
+            <div class="topbar-left">
+                <div class="eyebrow"><i class="bi bi-calendar3 me-1"></i>Friday, 25 July 2026</div>
+                <h2>FIR Management</h2>
+                <p>First Information Report — Bahria Town Karachi Police Station</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button class="btn-outline-custom" id="exportBtn"><i class="bi bi-download"></i> Export CSV</button>
+                <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#registerModal">
+                    <i class="bi bi-plus-lg"></i> Register FIR
+                </button>
+            </div>
+        </div>-->
+
+        <!-- STATS -->
+        <!--<div class="stats-grid">
+            <div class="stat-card teal">
+                <div class="stat-icon-wrap teal"><i class="bi bi-files"></i></div>
+                <div class="stat-value" id="st-total">8</div>
+                <div class="stat-label">Total FIRs Registered</div>
+                <span class="stat-delta up"><i class="bi bi-arrow-up-short"></i>+3 this week</span>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-icon-wrap green"><i class="bi bi-patch-check"></i></div>
+                <div class="stat-value" id="st-closed">1</div>
+                <div class="stat-label">Cases Resolved / Closed</div>
+                <span class="stat-delta neutral"><i class="bi bi-dash"></i>No change</span>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-icon-wrap amber"><i class="bi bi-search"></i></div>
+                <div class="stat-value" id="st-invest">2</div>
+                <div class="stat-label">Under Investigation</div>
+                <span class="stat-delta up"><i class="bi bi-arrow-up-short"></i>+1 today</span>
+            </div>
+            <div class="stat-card rose">
+                <div class="stat-icon-wrap rose"><i class="bi bi-hourglass-split"></i></div>
+                <div class="stat-value" id="st-pending">2</div>
+                <div class="stat-label">Pending Review</div>
+                <span class="stat-delta neutral"><i class="bi bi-dash"></i>Stable</span>
+            </div>
+        </div>-->
+
+        <!-- TABLE PANEL -->
+        <!--<div class="panel">
+            <div class="panel-header">
+                <div class="panel-title"><i class="bi bi-table"></i> FIR Records</div>
+                <span style="font-size:.76rem;color:var(--ink-faint)" id="recordCount">8 cases registered</span>
+            </div>
+
+            <div class="filter-row">
+                <div class="search-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="customSearch" placeholder="Search by FIR No, complainant, accused…">
+                </div>
+                <select class="filter-select" id="filterStatus">
+                    <option value="">All Statuses</option>
+                </select>
+                <select class="filter-select" id="filterIO">
+                    <option value="">All Officers</option>
+                </select>
+            </div>-->
+
+            <!-- Horizontal-scroll table wrapper -->
+            <!--<div class="tbl-wrap">
+                <table id="firTable" class="dataTable display" style="width:100%">
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>FIR No</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Complainant</th>
+                            <th>Accused</th>
+                            <th>Investigating Officer</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="tbl-footer">
+                <div id="dtInfo"></div>
+                <div id="dtPaginate"></div>
+            </div>
+        </div>
+    </main>-->
+
+    <!-- REGISTER / EDIT FIR MODAL -->
+    <!--<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title" id="modalTitle">
+                        <i class="bi bi-file-earmark-plus"></i> Register New FIR
+                        <span class="fir-auto-badge"><i class="bi bi-lightning-fill"></i> Auto-numbered</span>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="firForm" method="post" action="/FIR/CreateOrEdit">
+                        <input type="hidden" name="FirId" id="firIdHidden" />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">FIR Number</label>
+                                <input type="text" class="form-field" id="newFirNo" name="FirNo" readonly placeholder="Auto-generated on submit">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Date <span style="color:#c04040">*</span></label>
+                                <input type="date" class="form-field" id="newDate" name="DateReported" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Brief Case Description <span style="color:#c04040">*</span></label>
+                                <textarea class="form-field" id="newDesc" name="BriefDescription" rows="3" required placeholder="Describe the incident, location, and circumstances…"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Complainant Name <span style="color:#c04040">*</span></label>
+                                <input type="text" class="form-field" id="newComplainant" name="ComplainantName" required placeholder="Full name of complainant">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Accused <span style="color:#c04040">*</span></label>
+                                <input type="text" class="form-field" id="newAccused" name="AccusedName" required placeholder="Name(s) or description of accused">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Investigating Officer <span style="color:#c04040">*</span></label>
+                                <select class="form-field" id="newIO" name="IoId" required>
+                                    <option value="" disabled selected>Select officer</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Initial Status</label>
+                                <select class="form-field" id="newStatus" name="Status">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="firForm" class="btn-primary-custom" id="submitFIR"><i class="bi bi-check-lg"></i> Register FIR</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
+
+    <!-- VIEW DETAIL MODAL -->
+    <!--<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title"><i class="bi bi-file-earmark-text"></i> FIR Detail</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="viewBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>-->
+
+    <!-- TOAST -->
+    <!--<div class="toast-custom" id="toast">
+        <i class="bi bi-check-circle-fill"></i>
+        <span id="toastMsg">FIR registered successfully.</span>
+    </div>-->
+
+    <!-- Scripts -->
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        // ==================== FIR Management – Hybrid: Traditional Forms + AJAX DataTable ====================
+        var ioOptions = [];        // [{ id: 8, name: "Insp. Abdul Qadir" }, ...]
+        var statusOptions = [];    // [{ value: "REGISTERED", label: "Registered" }, ...]
+
+        // 1. Load dropdowns from database
+        function loadDropdowns() {
+            // Investigating Officers
+            $.getJSON('/FIR/GetIOList', function (data) {
+                ioOptions = data;
+                var $ioSelect = $('#newIO');
+                $ioSelect.empty().append('<option value="" disabled selected>Select officer</option>');
+                $.each(data, function (i, io) {
+                    $ioSelect.append($('<option>', { value: io.id, text: io.name }));
+                });
+
+                var $filterIO = $('#filterIO');
+                $filterIO.empty().append('<option value="">All Officers</option>');
+                $.each(data, function (i, io) {
+                    $filterIO.append($('<option>', { value: io.name, text: io.name }));
+                });
+            });
+
+            // FIR Statuses
+            $.getJSON('/FIR/GetStatusOptions', function (data) {
+                statusOptions = data;
+                var $statusSelect = $('#newStatus');
+                $statusSelect.empty();
+                $.each(data, function (i, st) {
+                    $statusSelect.append($('<option>', { value: st.value, text: st.label }));
+                });
+
+                var $filterStatus = $('#filterStatus');
+                $filterStatus.empty().append('<option value="">All Statuses</option>');
+                $.each(data, function (i, st) {
+                    $filterStatus.append($('<option>', { value: st.value, text: st.label }));
+                });
+            });
+        }
+
+        loadDropdowns();
+
+        // 2. Helper functions
+        function fmtDate(iso) {
+            if (!iso) return '';
+            return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', {
+                day: '2-digit', month: 'short', year: 'numeric'
+            });
+        }
+
+        function badgeHtml(s) {
+            var m = {
+                'REGISTERED': 'badge-active',
+                'UNDER_INVESTIGATION': 'badge-investigation',
+                'CHALLAN_SUBMITTED': 'badge-pending',
+                'IN_COURT': 'badge-pending',
+                'CLOSED': 'badge-closed',
+                'CANCELLED': 'badge-closed'
+            };
+            return '<span class="badge-pill ' + (m[s] || 'badge-closed') + '"><span class="dot"></span>' + s + '</span>';
+        }
+
+        function actHtml(firId) {
+            return '<div class="actions">' +
+                '<button class="act-btn view" title="View" data-id="' + firId + '"><i class="bi bi-eye"></i></button>' +
+                '<button class="act-btn edit" title="Edit" data-id="' + firId + '"><i class="bi bi-pencil"></i></button>' +
+                '<button class="act-btn del"  title="Delete" data-id="' + firId + '"><i class="bi bi-trash"></i></button>' +
+                '</div>';
+        }
+
+        function toast(msg) {
+            var el = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            el.classList.add('show');
+            setTimeout(function () { el.classList.remove('show'); }, 3000);
+        }
+
+        // 3. DataTable with AJAX source
+        try {
+            var dt = $('#firTable').DataTable({
+                ajax: {
+                    url: '/FIR/GetFIRList',
+                    dataSrc: function (json) {
+                        $('#st-total').text(json.stats.total);
+                        $('#st-closed').text(json.stats.closed);
+                        $('#st-invest').text(json.stats.investigation);
+                        $('#st-pending').text(json.stats.pending);
+                        $('#sidebarCount').text(json.stats.total);
+                        $('#recordCount').text(json.stats.total + ' case' + (json.stats.total !== 1 ? 's' : '') + ' registered');
+                        return json.data;
+                    }
+                },
+                pageLength: 10,
+                order: [[1, 'desc']],
+                autoWidth: false,
+                dom: 't<"__dtfoot"ip>',
+                columns: [
+                    {
+                        data: null, orderable: false,
+                        render: function (d, t, r, meta) {
+                            return '<span class="row-sno">' + String(meta.row + 1).padStart(2, '0') + '</span>';
+                        }
+                    },
+                    {
+                        data: 'firNo',
+                        render: function (d) { return '<span class="fir-no" title="' + d + '">' + d + '</span>'; }
+                    },
+                    {
+                        data: 'date',
+                        render: function (d) { return '<span style="color:var(--ink-muted);font-size:.79rem">' + fmtDate(d) + '</span>'; }
+                    },
+                    {
+                        data: 'desc', className: 'col-desc',
+                        render: function (d, type) {
+                            return type === 'display' ? '<span title="' + d.replace(/"/g, '&quot;') + '">' + d + '</span>' : d;
+                        }
+                    },
+                    {
+                        data: 'complainant',
+                        render: function (d) { return '<span style="font-weight:600">' + d + '</span>'; }
+                    },
+                    {
+                        data: 'accused',
+                        render: function (d) { return '<span style="color:var(--ink-muted);font-size:.79rem">' + d + '</span>'; }
+                    },
+                    {
+                        data: 'io',
+                        render: function (d) { return '<span style="font-size:.8rem">' + d + '</span>'; }
+                    },
+                    {
+                        data: 'status',
+                        render: function (d) { return badgeHtml(d); }
+                    },
+                    {
+                        data: 'firId', orderable: false,
+                        render: function (d) { return actHtml(d); }
+                    }
+                ],
+                drawCallback: function () {
+                    var i = 1;
+                    this.api().rows({ page: 'current' }).every(function () {
+                        var sno = this.node().querySelector('.row-sno');
+                        if (sno) sno.textContent = String(i++).padStart(2, '0');
+                    });
+
+                    var wrap = document.getElementById('firTable_wrapper');
+                    var inner = wrap ? wrap.querySelector('.__dtfoot') : null;
+                    if (inner) {
+                        var infoEl = inner.querySelector('.dataTables_info');
+                        var pagEl = inner.querySelector('.dataTables_paginate');
+                        if (infoEl) document.getElementById('dtInfo').replaceWith(infoEl);
+                        if (pagEl) document.getElementById('dtPaginate').replaceWith(pagEl);
+                    }
+                }
+            });
+
+            $('#customSearch').on('keyup', function () { dt.search(this.value).draw(); });
+            $('#filterStatus').on('change', function () { dt.column(7).search(this.value).draw(); });
+            $('#filterIO').on('change', function () { dt.column(6).search(this.value).draw(); });
+        } catch (e) {
+            console.error('DataTable init failed:', e);
+            alert('Table initialisation error – check console.');
+        }
+
+        // 4. Action buttons (View, Edit, Delete)
+        // View FIR details
+        $('#firTable').on('click', '.act-btn.view', function () {
+            var rowData = dt.row($(this).closest('tr')).data();
+            if (!rowData) return;
+            $('#viewBody').html(
+                '<div class="detail-row"><div class="detail-label">FIR Number</div><div class="detail-value" style="font-weight:700;color:var(--teal-mid)">' + rowData.firNo + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Date</div><div class="detail-value">' + fmtDate(rowData.date) + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Description</div><div class="detail-value" style="white-space:normal;line-height:1.6">' + rowData.desc + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Complainant</div><div class="detail-value">' + rowData.complainant + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Accused</div><div class="detail-value">' + rowData.accused + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Investigating Officer</div><div class="detail-value">' + rowData.io + '</div></div>' +
+                '<div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">' + badgeHtml(rowData.status) + '</div></div>'
+            );
+            new bootstrap.Modal(document.getElementById('viewModal')).show();
+        });
+
+        // Edit FIR – populate the form and open the modal
+        $('#firTable').on('click', '.act-btn.edit', function () {
+            var rowData = dt.row($(this).closest('tr')).data();
+            if (!rowData) return;
+
+            $('#firIdHidden').val(rowData.firId);
+            $('#newFirNo').val(rowData.firNo);
+            $('#newDate').val(rowData.date);
+            $('#newDesc').val(rowData.desc);
+            $('#newComplainant').val(rowData.complainant);
+            $('#newAccused').val(rowData.accused);
+
+            var io = ioOptions.find(function (opt) { return opt.name === rowData.io; });
+            if (io) $('#newIO').val(io.id);
+            else $('#newIO').val('');
+
+            $('#newStatus').val(rowData.status);
+
+            $('#modalTitle').html('<i class="bi bi-pencil-square"></i> Edit FIR');
+            new bootstrap.Modal(document.getElementById('registerModal')).show();
+        });
+
+        // Delete FIR – traditional POST via mini form
+        $('#firTable').on('click', '.act-btn.del', function () {
+            var id = $(this).data('id');
+            var firNo = $(this).closest('tr').find('.fir-no').text();
+            if (confirm('Delete ' + firNo + '?')) {
+                var form = $('<form>', {
+                    method: 'post',
+                    action: '/FIR/Delete'
+                }).append($('<input>', { type: 'hidden', name: 'id', value: id }));
+                $('body').append(form);
+                form.submit();
+            }
+        });
+
+        // 5. Modal behaviour
+        $('#registerModal').on('show.bs.modal', function () {
+            if (!$('#firIdHidden').val()) {
+                // New FIR – reset form
+                $('#firForm')[0].reset();
+                $('#newFirNo').val('Auto-generated on submit');
+                $('#newDate').val(new Date().toISOString().slice(0, 10));
+                $('#newStatus').val(statusOptions.length > 0 ? statusOptions[0].value : 'REGISTERED');
+                $('#modalTitle').html('<i class="bi bi-file-earmark-plus"></i> Register New FIR <span class="fir-auto-badge"><i class="bi bi-lightning-fill"></i> Auto-numbered</span>');
+            }
+        });
+
+        $('#registerModal').on('hidden.bs.modal', function () {
+            // Clean up any lingering edit ID
+            $('#firIdHidden').val('');
+            $('#modalTitle').html('<i class="bi bi-file-earmark-plus"></i> Register New FIR <span class="fir-auto-badge"><i class="bi bi-lightning-fill"></i> Auto-numbered</span>');
+        });
+
+        // 6. Export CSV
+        $('#exportBtn').on('click', function () {
+            var data = dt.rows({ search: 'applied' }).data().toArray();
+            var hdr = ['FIR No', 'Date', 'Description', 'Complainant', 'Accused', 'IO', 'Status'];
+            var rows = data.map(function (r) {
+                return [r.firNo, fmtDate(r.date), '"' + r.desc.replace(/"/g, '""') + '"', r.complainant, r.accused, r.io, r.status];
+            });
+            var csv = [hdr].concat(rows).map(function (r) { return r.join(','); }).join('\n');
+            var a = document.createElement('a');
+            a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            a.download = 'FIR-Records-' + new Date().toISOString().slice(0, 10) + '.csv';
+            a.click();
+            toast('CSV exported.');
+        });
+    </script>
+</body>
+</html>-->

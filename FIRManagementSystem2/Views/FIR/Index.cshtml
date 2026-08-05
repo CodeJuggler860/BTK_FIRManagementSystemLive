@@ -1,0 +1,481 @@
+﻿@{
+    ViewData["Title"] = "Case & FIR Management";
+    ViewData["PageTitle"] = "Case Summary";
+    ViewData["PageSubtitle"] = "Bahria Town Karachi Security Department";
+    ViewData["ActivePage"] = "Cases";
+    ViewData["HideSidebar"] = true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/fir.css" />
+}
+
+@section TopbarActions {
+    <button class="btn-outline-custom" data-bs-toggle="modal" data-bs-target="#addCaseModal">
+        <i class="bi bi-folder-plus"></i> Add Case
+    </button>
+    @* "Add FIR" button removed – FIRs are now created from a case *@
+}
+
+<!-- CASE STATS (unchanged) -->
+<div class="stats-grid">
+    <div class="stat-card teal">
+        <div class="stat-icon-wrap teal"><i class="bi bi-folder2-open"></i></div>
+        <div class="stat-value" id="case-st-total">—</div>
+        <div class="stat-label">Total Cases</div>
+    </div>
+    <div class="stat-card amber">
+        <div class="stat-icon-wrap amber"><i class="bi bi-arrow-repeat"></i></div>
+        <div class="stat-value" id="case-st-forwarded">—</div>
+        <div class="stat-label">Forwarded to Police</div>
+    </div>
+    <div class="stat-card green">
+        <div class="stat-icon-wrap green"><i class="bi bi-check-circle"></i></div>
+        <div class="stat-value" id="case-st-closed">—</div>
+        <div class="stat-label">Closed</div>
+    </div>
+    <div class="stat-card rose">
+        <div class="stat-icon-wrap rose"><i class="bi bi-hourglass-split"></i></div>
+        <div class="stat-value" id="case-st-open">—</div>
+        <div class="stat-label">Open / Pending</div>
+    </div>
+</div>
+
+<!-- CASE TABLE PANEL (unchanged) -->
+<div class="panel" style="margin-bottom:30px;">
+    <div class="panel-header">
+        <div class="panel-title"><i class="bi bi-folder2-open"></i> Case Records</div>
+        <span style="font-size:.76rem;color:var(--ink-faint)" id="caseRecordCount">Loading…</span>
+    </div>
+    <div class="filter-row">
+        <div class="search-wrap">
+            <i class="bi bi-search"></i>
+            <input type="text" id="caseSearch" placeholder="Search by description, complainant, accused…">
+        </div>
+        <select class="filter-select" id="filterCaseStatus">
+            <option value="">All Statuses</option>
+            <option>OPEN</option>
+            <option>CLOSED</option>
+            <option>Forwarded to Police</option>
+        </select>
+    </div>
+    <div class="tbl-wrap">
+        <table id="caseTable" class="dataTable display" style="width:100%">
+            <colgroup>
+                <col style="width:50px">
+                <col style="width:100px">
+                <col style="width:auto">
+                <col style="width:150px">
+                <col style="width:150px">
+                <col style="width:120px">
+                <col style="width:100px">
+                <col style="width:100px">
+                <col style="width:100px">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Case ID</th>
+                    <th>Description</th>
+                    <th>Complainant</th>
+                    <th>Accused</th>
+                    <th>Status</th>
+                    <th>FIR Registered</th>
+                    <th>FIR</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="tbl-footer">
+        <div id="caseDtInfo"></div>
+        <div id="caseDtPaginate"></div>
+    </div>
+</div>
+
+@* ═══════════ FIR STATS (commented out) ═══════════
+    <div class="stats-grid">
+        <div class="stat-card teal">
+            <div class="stat-icon-wrap teal"><i class="bi bi-files"></i></div>
+            <div class="stat-value" id="st-total">—</div>
+            <div class="stat-label">Total FIRs Registered</div>
+            <span class="stat-delta" id="st-total-delta"><i class="bi bi-arrow-up-short"></i>+3 this week</span>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-icon-wrap green"><i class="bi bi-patch-check"></i></div>
+            <div class="stat-value" id="st-closed">—</div>
+            <div class="stat-label">Cases Resolved / Closed</div>
+            <span class="stat-delta" id="st-closed-delta"><i class="bi bi-dash"></i>No change</span>
+        </div>
+        <div class="stat-card amber">
+            <div class="stat-icon-wrap amber"><i class="bi bi-search"></i></div>
+            <div class="stat-value" id="st-invest">—</div>
+            <div class="stat-label">Under Trial</div>
+            <span class="stat-delta" id="st-invest-delta"><i class="bi bi-arrow-up-short"></i>+1 today</span>
+        </div>
+        <div class="stat-card rose">
+            <div class="stat-icon-wrap rose"><i class="bi bi-hourglass-split"></i></div>
+            <div class="stat-value" id="st-pending">—</div>
+            <div class="stat-label">Dormant Cases</div>
+            <span class="stat-delta" id="st-pending-delta"><i class="bi bi-dash"></i>Stable</span>
+        </div>
+    </div>
+*@
+
+@* ═══════════ FIR TABLE (commented out) ═══════════
+    <div class="panel">
+        <div class="panel-header">
+            <div class="panel-title"><i class="bi bi-table"></i> FIR Records</div>
+            <span style="font-size:.76rem;color:var(--ink-faint)" id="recordCount">Loading…</span>
+        </div>
+        <div class="filter-row">
+            <div class="search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="text" id="customSearch" placeholder="Search by FIR No, complainant, accused…">
+            </div>
+            <select class="filter-select" id="filterStatus">
+                <option value="">All Statuses</option>
+            </select>
+            <select class="filter-select" id="filterIO">
+                <option value="">All Officers</option>
+            </select>
+        </div>
+        <div class="tbl-wrap">
+            <table id="firTable" class="dataTable display" style="width:100%">
+                <colgroup>
+                    <col><col><col><col><col><col><col><col><col>
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>FIR No</th>
+                        <th>Date</th>
+                        <th>Case Description</th>
+                        <th>Complainant</th>
+                        <th>Accused</th>
+                        <th>Investigating Officer</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div class="tbl-footer">
+            <div id="dtInfo"></div>
+            <div id="dtPaginate"></div>
+        </div>
+    </div>
+*@
+
+<!-- ═══════════ REGISTER / EDIT FIR MODAL (with attachment) ═══════════ -->
+<div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"><i class="bi bi-file-earmark-plus"></i> Add New FIR</div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="firForm" method="post" action="/FIR/CreateOrEdit" enctype="multipart/form-data">
+                    <input type="hidden" name="Srno" id="firIdHidden" />
+                    <input type="hidden" name="caseId" id="firCaseIdHidden" />
+                    <div class="row g-3">
+                        <div class="col-md-4"><label class="form-label">FIR Number <span style="color:#c04040">*</span></label><input type="text" class="form-field" id="newFirNo" name="FirNo" required placeholder="e.g., 2026/KHI/001"></div>
+                        <div class="col-md-4"><label class="form-label">Date <span style="color:#c04040">*</span></label><input type="date" class="form-field" id="newDate" name="FirDate" required></div>
+                        <div class="col-md-4"><label class="form-label">Police Station</label><input type="text" class="form-field" id="newPoliceStation" name="PoliceStation" placeholder="Station name"></div>
+                        <div class="col-md-6"><label class="form-label">Complainant <span style="color:#c04040">*</span></label><input type="text" class="form-field" id="newComplainant" name="Complainant" required></div>
+                        <div class="col-md-6"><label class="form-label">Accused <span style="color:#c04040">*</span></label><input type="text" class="form-field" id="newAccused" name="Accused" required></div>
+                        <div class="col-12"><label class="form-label">Case Description <span style="color:#c04040">*</span></label><textarea class="form-field" id="newDesc" name="Description" rows="3" required></textarea></div>
+                        <div class="col-md-6"><label class="form-label">Location / Place of Occurrence</label><input type="text" class="form-field" id="newLocation" name="Location"></div>
+                        <div class="col-md-6"><label class="form-label">Sections</label><input type="text" class="form-field" id="newSections" name="Sections" placeholder="e.g., 302, 365"></div>
+                        <div class="col-md-6"><label class="form-label">Investigating Officer</label><input type="text" class="form-field" id="newIO" name="InvestigationOfficer" placeholder="Officer name"></div>
+                        <div class="col-md-6"><label class="form-label">Status <span style="color:#c04040">*</span></label><select class="form-field" id="newStatus" name="Status" required></select></div>
+                        <!-- NEW: Attachment field -->
+                        <div class="col-12">
+                            <label class="form-label">Attachment</label>
+                            <input type="file" class="form-control" id="firAttachment" name="firAttachment" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" form="firForm" class="btn-primary-custom" id="submitFIR"><i class="bi bi-check-lg"></i> Save FIR</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ VIEW DETAIL MODAL (unchanged) ═══════════ -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"><div class="modal-title"><i class="bi bi-file-earmark-text"></i> FIR Detail</div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body" id="viewBody"></div>
+            <div class="modal-footer"><button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Close</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ UPLOAD DOCUMENT MODAL (unchanged) ═══════════ -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"><div class="modal-title"><i class="bi bi-paperclip"></i> Attach Document</div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body">
+                <input type="hidden" id="uploadFirId" />
+                <div class="mb-3"><label class="form-label">Document Type <span style="color:#c04040">*</span></label><select class="form-field" id="uploadDocType"></select></div>
+                <div class="mb-3"><label class="form-label">File <span style="color:#c04040">*</span></label><input type="file" class="form-control" id="uploadFile" /></div>
+                <div class="mb-3"><label class="form-label">Description (optional)</label><textarea class="form-field" id="uploadDesc" rows="2" placeholder="Brief description"></textarea></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-primary-custom" id="submitUpload"><i class="bi bi-cloud-upload"></i> Upload</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ DELETE CONFIRMATION MODAL (unchanged) ═══════════ -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"><div class="modal-title"><i class="bi bi-exclamation-triangle text-warning"></i> Confirm Deletion</div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+            <div class="modal-body"><p id="deleteMessage">Are you sure you want to delete this item?</p></div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn-primary-custom" id="confirmDeleteBtn" style="background: var(--rose-mid);"><i class="bi bi-trash"></i> Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ ADD / EDIT CASE MODAL (unchanged) ═══════════ -->
+<div class="modal fade" id="addCaseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="caseModalTitle"><i class="bi bi-folder-plus"></i> Register New Case</div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="caseForm" method="post" action="/FIR/CreateCase">
+                <input type="hidden" name="CASE_ID" id="caseIdHidden" />
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Case Description <span style="color:#c04040">*</span></label>
+                            <textarea class="form-field" name="CASE_DESCRIPTION" id="caseDesc" rows="3" required></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Complainant Name <span style="color:#c04040">*</span></label>
+                            <input type="text" class="form-field" name="COMPLAINANT_NAME" id="caseComplainant" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Accused Name</label>
+                            <input type="text" class="form-field" name="ACCUSED_NAME" id="caseAccused">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Case Status</label>
+                            <input type="text" class="form-field" name="CASE_STATUS" id="caseStatus" placeholder="e.g., Open, Under Investigation">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-field" name="LOCATION" id="caseLocation" placeholder="Place of occurrence">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-primary-custom" id="caseSubmitBtn"><i class="bi bi-check-lg"></i> Save Case</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Scripts/fir-dashboard.js"></script>
+    <script>
+        // ── Case DataTable (independent) ──
+        $(document).ready(function () {
+            var caseDt = $('#caseTable').DataTable({
+                ajax: {
+                    url: '/FIR/GetCaseList',
+                    dataSrc: function (json) {
+                        $('#case-st-total').text(json.stats.total);
+                        $('#case-st-forwarded').text(json.stats.forwarded);
+                        $('#case-st-closed').text(json.stats.closed);
+                        $('#case-st-open').text(json.stats.open);
+                        $('#caseRecordCount').text(json.stats.total + ' case' + (json.stats.total !== 1 ? 's' : '') + ' recorded');
+                        return json.data;
+                    }
+                },
+                pageLength: 10,
+                order: [[1, 'desc']],
+                autoWidth: false,
+                dom: 't<"__dtfoot"ip>',
+                columns: [
+                    { data: null, orderable: false, render: (d, t, r, meta) => '<span class="row-sno">' + String(meta.row + 1).padStart(2, '0') + '</span>' },
+                    { data: 'caseId', render: d => '<span class="fir-no">' + d.toString().padStart(4, '0') + '</span>' },
+                    { data: 'description', className: 'col-desc', render: d => '<span title="' + d.replace(/"/g, '&quot;') + '">' + d + '</span>' },
+                    { data: 'complainant', render: d => '<span style="font-weight:600">' + d + '</span>' },
+                    { data: 'accused', render: d => d || '—' },
+                    { data: 'status', render: d => '<span class="badge-pill ' + (d === 'OPEN' ? 'badge-active' : d === 'CLOSED' ? 'badge-closed' : 'badge-investigation') + '"><span class="dot"></span>' + d + '</span>' },
+                    { data: 'firRegistered' },
+                    {
+                        data: 'firRegistered',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (data === 'No') {
+                                return '<button class="btn-primary-custom addFirBtn" style="padding:4px 10px;font-size:.75rem;" data-id="' + row.caseId + '">' +
+                                    '<i class="bi bi-file-earmark-plus"></i> Add FIR</button>';
+                            } else if (row.firSrno) {
+                                return '<a href="/FIR/Details/' + row.firSrno + '" class="btn-outline-custom" style="padding:4px 10px;font-size:.75rem;">' +
+                                    '<i class="bi bi-eye"></i> View FIR</a>';
+                            } else {
+                                return '—';
+                            }
+                        }
+                    },
+                    {
+                        data: 'caseId',
+                        orderable: false,
+                        render: function (data) {
+                            return '<div class="actions">' +
+                                '<button class="act-btn view" title="View" data-id="' + data + '"><i class="bi bi-eye"></i></button>' +
+                                '<button class="act-btn edit" title="Edit" data-id="' + data + '"><i class="bi bi-pencil"></i></button>' +
+                                '<button class="act-btn del"  title="Delete" data-id="' + data + '"><i class="bi bi-trash"></i></button>' +
+                                '</div>';
+                        }
+                    }
+                ],
+                drawCallback: function () {
+                    var i = 1;
+                    this.api().rows({ page: 'current' }).every(function () {
+                        var sno = this.node().querySelector('.row-sno');
+                        if (sno) sno.textContent = String(i++).padStart(2, '0');
+                    });
+                    var wrap = document.getElementById('caseTable_wrapper');
+                    var inner = wrap ? wrap.querySelector('.__dtfoot') : null;
+                    if (inner) {
+                        var infoEl = inner.querySelector('.dataTables_info');
+                        var pagEl = inner.querySelector('.dataTables_paginate');
+                        if (infoEl) document.getElementById('caseDtInfo').replaceWith(infoEl);
+                        if (pagEl) document.getElementById('caseDtPaginate').replaceWith(pagEl);
+                    }
+                }
+            });
+            $('#caseSearch').on('keyup', function () { caseDt.search(this.value).draw(); });
+            $('#filterCaseStatus').on('change', function () {
+                var val = this.value;
+                caseDt.column(5).search(val ? '^' + val + '$' : '', true, false).draw();
+            });
+
+            // Add FIR from Case
+            $('#caseTable').on('click', '.addFirBtn', function () {
+                var caseId = $(this).data('id');
+                $.getJSON('/FIR/GetCaseForFir', { caseId: caseId }, function (resp) {
+                    if (resp.success) {
+                        $('#firForm')[0].reset();
+                        $('#firIdHidden').val('');
+                        $('#newFirNo').val('');
+                        $('#newDate').val(new Date().toISOString().slice(0, 10));
+                        $('#newComplainant').val(resp.complainant || '');
+                        $('#newAccused').val(resp.accused || '');
+                        $('#newDesc').val(resp.description || '');
+                        $('#newLocation').val(resp.location || '');
+                        $('#firCaseIdHidden').val(caseId);
+                        // Clear previous file selection
+                        $('#firAttachment').val('');
+                        $('#modalTitle').html('<i class="bi bi-file-earmark-plus"></i> Add FIR from Case #' + caseId);
+                        new bootstrap.Modal(document.getElementById('registerModal')).show();
+                    }
+                });
+            });
+
+            // ── Case Edit Button ──
+            $('#caseTable').on('click', '.act-btn.edit', function () {
+                var caseId = $(this).data('id');
+                $.getJSON('/FIR/GetCaseById', { id: caseId }, function (resp) {
+                    if (resp.success) {
+                        $('#caseIdHidden').val(resp.caseId);
+                        $('#caseDesc').val(resp.description);
+                        $('#caseComplainant').val(resp.complainant);
+                        $('#caseAccused').val(resp.accused);
+                        $('#caseStatus').val(resp.status);
+                        $('#caseLocation').val(resp.location);
+                        $('#caseForm').attr('action', '/FIR/EditCase');
+                        $('#caseModalTitle').html('<i class="bi bi-pencil-square"></i> Edit Case');
+                        $('#caseSubmitBtn').html('<i class="bi bi-check-lg"></i> Update Case');
+                        new bootstrap.Modal(document.getElementById('addCaseModal')).show();
+                    } else {
+                        alert('Case not found.');
+                    }
+                });
+            });
+
+            // ── Case Delete Button ──
+            $('#caseTable').on('click', '.act-btn.del', function () {
+                var caseId = $(this).data('id');
+                $('#deleteMessage').text('Are you sure you want to delete Case #' + caseId + '?');
+                $('#confirmDeleteBtn').data('url', '/FIR/DeleteCase').data('id', caseId);
+                new bootstrap.Modal(document.getElementById('confirmDeleteModal')).show();
+            });
+
+            // ── Confirm Deletion ──
+            $('#confirmDeleteBtn').off('click').on('click', function () {
+                var id = $(this).data('id');
+                var url = $(this).data('url');
+                if (!id || !url) return;
+                var form = $('<form>', { method: 'post', action: url })
+                    .append($('<input>', { type: 'hidden', name: 'id', value: id }));
+                $('body').append(form);
+                form.submit();
+                bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal')).hide();
+            });
+
+            // ── Reset modal when opening for add ──
+            $('#addCaseModal').on('show.bs.modal', function () {
+                if ($('#caseIdHidden').val() === '') {
+                    $('#caseForm').attr('action', '/FIR/CreateCase');
+                    $('#caseModalTitle').html('<i class="bi bi-folder-plus"></i> Register New Case');
+                    $('#caseSubmitBtn').html('<i class="bi bi-check-lg"></i> Save Case');
+                }
+            });
+
+            $('#addCaseModal').on('hidden.bs.modal', function () {
+                $('#caseForm')[0].reset();
+                $('#caseIdHidden').val('');
+            });
+
+            // View Case – reuse the existing FIR detail modal
+            $('#caseTable').on('click', '.act-btn.view', function () {
+                var caseId = $(this).data('id');
+                $.getJSON('/FIR/GetCaseById', { id: caseId }, function (resp) {
+                    if (resp.success) {
+                        var html =
+                            '<div class="detail-row"><div class="detail-label">Case ID</div><div class="detail-value" style="font-weight:700;color:var(--teal-mid)">' +
+                            resp.caseId.toString().padStart(4, '0') + '</div></div>' +
+                            '<div class="detail-row"><div class="detail-label">Description</div><div class="detail-value" style="white-space:normal;line-height:1.6">' +
+                            resp.description + '</div></div>' +
+                            '<div class="detail-row"><div class="detail-label">Complainant</div><div class="detail-value">' +
+                            resp.complainant + '</div></div>' +
+                            '<div class="detail-row"><div class="detail-label">Accused</div><div class="detail-value">' +
+                            (resp.accused || '—') + '</div></div>' +
+                            '<div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">' +
+                            resp.status + '</div></div>' +
+                            '<div class="detail-row"><div class="detail-label">FIR Registered</div><div class="detail-value">' +
+                            (resp.firRegistered === 'Y' ? 'Yes' : 'No') + '</div></div>';
+
+                        $('#viewBody').html(html);
+                        new bootstrap.Modal(document.getElementById('viewModal')).show();
+                    } else {
+                        alert('Case not found.');
+                    }
+                });
+            });
+        });
+    </script>
+}

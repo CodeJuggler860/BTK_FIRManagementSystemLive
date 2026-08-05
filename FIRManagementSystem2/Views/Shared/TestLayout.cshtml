@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Layout Test";
+    ViewData["PageTitle"] = "Layout Test";
+    ViewData["PageSubtitle"] = "Checking sidebar, topbar, and toast";
+    ViewData["ActivePage"] = "FIR";
+}
+
+@section TopbarActions {
+    <button class="btn-outline-custom" onclick="showToast('Hello from toast!')">Test Toast</button>
+}
+
+<p>If you can see the sidebar, topbar (with a button), and a toast message appears, the layout works!</p>

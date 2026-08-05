@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "FIR Management";
+    ViewData["PageTitle"] = "FIR Management";
+    ViewData["PageSubtitle"] = "First Information Report  Bahria Town Karachi ";
+    ViewData["ActivePage"] = "FIR";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/css/fir.css" />
+}
+
+@section TopbarActions {
+    <button class="btn-outline-custom" id="exportBtn"><i class="bi bi-download"></i> Export CSV</button>
+    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#registerModal">
+        <i class="bi bi-plus-lg"></i> Register FIR
+    </button>
+}
+
+<!-- STAT CARDS – exactly as you have them now, with IDs like st-total, etc. -->
+<div class="stats-grid">
+    <!-- ... keep your existing stats HTML ... -->
+</div>
+
+<!-- TABLE PANEL – keep your filter row and DataTable exactly -->
+<div class="panel">
+    <!-- ... -->
+</div>
+
+<!-- REGISTER/EDIT MODAL – use the FORM version you already built -->
+<div class="modal fade" id="registerModal">
+    <!-- form with action="/FIR/CreateOrEdit", hidden FirId, etc. -->
+</div>
+
+<!-- VIEW DETAIL MODAL – same as before -->
+<div class="modal fade" id="viewModal">...</div>
+
+@section Scripts {
+    <script src="~/Scripts/fir-dashboard.js"></script>
+}

@@ -1,0 +1,217 @@
+﻿@model FIRManagementSystem2.ViewModels.FirCopyViewModel
+@{
+    ViewData["Title"] = "FIR Details";
+    ViewData["PageTitle"] = "";
+    ViewData["PageSubtitle"] = "";
+    ViewData["ActivePage"] = "FIR";
+    ViewData["HideSidebar"] = true;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/fir-copy.css" />
+}
+
+@section TopbarActions {
+    <a href="/FIR/Index" class="btn-outline-custom"><i class="bi bi-arrow-left"></i> Back</a>
+}
+
+<!-- Combined Header: FIR No, Status, and Attachment Name (no breadcrumb) -->
+<div class="fir-header-row">
+    <div class="fir-header-left">
+        <h3>@Model.FirNo</h3>
+        <span class="badge-pill @(Model.Status == "REGISTERED" ? "badge-active" : Model.Status == "RESOLVED" ? "badge-closed" : Model.Status == "UNDER_TRIAL" ? "badge-investigation" : "badge-pending")">
+            <span class="dot"></span>@Model.Status
+        </span>
+    </div>
+    @if (Model.Documents != null && Model.Documents.Any())
+    {
+        <div class="fir-header-right">
+            <i class="bi bi-paperclip"></i>
+            <span class="current-filename">@Model.Documents.First().FileName</span>
+            <span class="attachment-badge">1/@Model.Documents.Count</span>
+        </div>
+    }
+</div>
+
+<!-- Attachment Preview (top half) -->
+<div class="attachment-preview-panel">
+    @if (Model.Documents != null && Model.Documents.Any())
+    {
+        <div class="preview-frame">
+            <iframe id="attachmentFrame"
+                    src="@Url.Action("DownloadDocument", new { id = Model.Documents.First().DocId, preview = true })"
+                    allowfullscreen></iframe>
+        </div>
+
+        <div class="attachment-thumbs">
+            @foreach (var doc in Model.Documents)
+            {
+                <div class="thumb-item @(doc == Model.Documents.First() ? "active" : "")"
+                     data-url="@Url.Action("DownloadDocument", new { id = doc.DocId })"
+                     data-filename="@doc.FileName"
+                     title="@doc.FileName">
+                    <i class="bi @(doc.MimeType?.StartsWith("image") == true ? "bi-file-image" : "bi-file-earmark-pdf")"></i>
+                    <span>@doc.FileName</span>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-attachment">
+            <i class="bi bi-paperclip"></i>
+            <p>No attachments have been added to this FIR.</p>
+        </div>
+    }
+</div>
+
+<!-- Remarks Panel (safe, no‑overlap version) -->
+<div class="remarks-panel-full">
+    <!-- Header -->
+    <div class="remarks-header">
+        <div class="remarks-title"><i class="bi bi-chat-left-text"></i> Remarks & Updates</div>
+        <span class="remarks-count" id="remarksCount">@Model.Remarks.Count remarks</span>
+    </div>
+
+    <!-- Compose area (NEVER sticky, always in flow) -->
+    <div class="remarks-compose">
+        <textarea id="remarkText" placeholder="Add a remark…" maxlength="500"></textarea>
+        <div class="compose-actions">
+            <button class="btn-add-remark" id="addRemarkBtn"><i class="bi bi-send"></i> Add Remark</button>
+        </div>
+    </div>
+
+    <!-- Scrollable remarks list (no fixed height inside – it uses flex:1) -->
+    <div class="remarks-list" id="remarksList">
+        @if (!Model.Remarks.Any())
+        {
+            <div class="remarks-empty" id="remarksEmpty">
+                <i class="bi bi-chat-left-dots"></i><p>No remarks yet.</p>
+            </div>
+        }
+        else
+        {
+            foreach (var remark in Model.Remarks.OrderByDescending(r => r.CreatedAt))
+            {
+                var initials = string.Concat(remark.AuthorName.Split(' ').Take(2).Select(w => w.FirstOrDefault().ToString()));
+
+                <div class="remark-card" data-id="@remark.Id">
+                    <div class="remark-header">
+                        <div class="remark-author">
+                            <div class="remark-avatar">@initials</div>
+                            <div>
+                                <div class="remark-name">@remark.AuthorName</div>
+                                <div class="remark-role">@remark.AuthorRole</div>
+                            </div>
+                        </div>
+                        <div class="remark-meta">
+                            <span class="remark-time">@remark.CreatedAt.ToString("dd MMM, HH:mm")</span>
+                        </div>
+                    </div>
+                    <div class="remark-body">@remark.Body</div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+    var firSrno = @Model.Srno;
+
+    // ── Switch attachment preview ──
+    document.querySelectorAll('.thumb-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+            var url = this.dataset.url + '?preview=true';
+            document.getElementById('attachmentFrame').src = url;
+            document.querySelectorAll('.thumb-item').forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
+
+            // Update header info
+            var filename = this.dataset.filename;
+            document.querySelector('.current-filename').textContent = filename;
+
+            var total = document.querySelectorAll('.thumb-item').length;
+            var current = Array.from(document.querySelectorAll('.thumb-item')).indexOf(this) + 1;
+            document.querySelector('.attachment-badge').textContent = current + '/' + total;
+        });
+    });
+
+    // ── Remarks logic ──
+    (function() {
+        const listEl   = document.getElementById('remarksList');
+        const countEl  = document.getElementById('remarksCount');
+        const emptyEl  = document.getElementById('remarksEmpty');
+
+        function getInitials(name) {
+            return name.split(' ').slice(0,2).map(w => w.charAt(0).toUpperCase()).join('');
+        }
+        function fmtTime(date) {
+            return date.toLocaleDateString('en-GB', { day:'2-digit', month:'short' })
+                + ', ' + date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', hour12:false });
+        }
+        function updateCount() {
+            const n = listEl.querySelectorAll('.remark-card').length;
+            countEl.textContent = n + ' remark' + (n !== 1 ? 's' : '');
+        }
+        function buildCard(data, isNew) {
+            const div = document.createElement('div');
+            div.className = 'remark-card' + (isNew ? ' is-new' : '');
+            div.innerHTML = `<div class="remark-header">
+                <div class="remark-author">
+                    <div class="remark-avatar">${getInitials(data.authorName)}</div>
+                    <div>
+                        <div class="remark-name">${data.authorName}</div>
+                        <div class="remark-role">${data.authorRole}</div>
+                    </div>
+                </div>
+                <div class="remark-meta">
+                    <span class="remark-time">${fmtTime(new Date(data.createdAt))}</span>
+                </div>
+            </div>
+            <div class="remark-body">${data.body}</div>`;
+            return div;
+        }
+
+        document.getElementById('addRemarkBtn').addEventListener('click', function() {
+            const textarea = document.getElementById('remarkText');
+            const body = textarea.value.trim();
+            if (!body) { textarea.focus(); return; }
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Saving…';
+
+            fetch('/FIR/AddRemark', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ srno: firSrno, body: body })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    if (emptyEl) emptyEl.remove();
+                    const card = buildCard(data, true);
+                    listEl.insertBefore(card, listEl.firstChild);
+                    textarea.value = '';
+                    updateCount();
+                    showToast('Remark added.');
+                }
+                else {
+                    showToast(data.message || 'Failed.', true);
+                }
+            })
+            .catch(() => showToast('Network error.', true))
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-send"></i> Add Remark';
+            });
+        });
+
+        document.getElementById('remarkText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') document.getElementById('addRemarkBtn').click();
+        });
+
+        updateCount();
+    })();
+    </script>
+}
